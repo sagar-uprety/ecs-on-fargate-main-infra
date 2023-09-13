@@ -3,5 +3,5 @@
 ################################################################################
 
 environment = "dev"
-application = "adex-devops-competency"
+application = "lms-ecs-terraform"
 owner       = "adex"
