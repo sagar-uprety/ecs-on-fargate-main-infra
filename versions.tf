@@ -13,10 +13,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "lms-ecs-dev"
+    bucket  = "lms-playground"
     region  = "us-east-2"
     encrypt = true
-    # dynamodb_table = "tfstates-lock"
-    key = "terraform.tfstate"
+    key     = "terraform.tfstate"
   }
 }

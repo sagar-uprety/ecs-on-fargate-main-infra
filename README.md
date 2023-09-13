@@ -583,6 +583,12 @@ This workflow incorporates Terraform, Checkov, tfsec, and Infracost to validate,
 | <a name="module_alb"></a> [alb](#module\_alb) | terraform-aws-modules/alb/aws | ~> 8.0 |
 | <a name="module_alb_sg"></a> [alb\_sg](#module\_alb\_sg) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws//modules/cluster | 5.2.2 |
+| <a name="module_order_dynamodb_table"></a> [order\_dynamodb\_table](#module\_order\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_order_ecr"></a> [order\_ecr](#module\_order\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
+| <a name="module_product_dynamodb_table"></a> [product\_dynamodb\_table](#module\_product\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_product_ecr"></a> [product\_ecr](#module\_product\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
+| <a name="module_user_dynamodb_table"></a> [user\_dynamodb\_table](#module\_user\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_user_ecr"></a> [user\_ecr](#module\_user\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 5.1.2 |
 
 ## Resources
@@ -605,6 +611,7 @@ This workflow incorporates Terraform, Checkov, tfsec, and Infracost to validate,
 
 | Name | Description |
 |------|-------------|
+| <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | n/a |
 | <a name="output_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#output\_ecs\_cluster\_arn) | n/a |
 | <a name="output_ecs_service_discovery_arn"></a> [ecs\_service\_discovery\_arn](#output\_ecs\_service\_discovery\_arn) | n/a |
 | <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | n/a |

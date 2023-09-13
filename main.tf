@@ -84,9 +84,8 @@ resource "aws_service_discovery_http_namespace" "ecs_service_discovery" {
 
 
 module "alb_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
-
+  source      = "terraform-aws-modules/security-group/aws"
+  version     = "~> 5.0"
   name        = "${local.name}-service"
   description = "Service security group"
   vpc_id      = module.vpc.vpc_id
@@ -105,8 +104,7 @@ module "alb_sg" {
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
-
-  name = local.name
+  name    = local.name
 
   load_balancer_type = "application"
 
@@ -229,9 +227,8 @@ module "alb" {
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"
-
-  name = "lms-dev"
-  cidr = local.vpc_cidr
+  name    = "lms-dev"
+  cidr    = local.vpc_cidr
 
   azs             = local.azs
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
@@ -243,4 +240,133 @@ module "vpc" {
     Terraform   = "true"
     Environment = "dev"
   }
+}
+
+
+# DynamoDB
+
+module "order_dynamodb_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+  version  = "3.3.0"
+  name     = "ecs-orders-ms"
+  hash_key = "id"
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+
+  tags = local.tags
+}
+
+module "user_dynamodb_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+  version  = "3.3.0"
+  name     = "ecs-users-ms"
+  hash_key = "id"
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+
+  tags = local.tags
+}
+
+module "product_dynamodb_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+  version  = "3.3.0"
+  name     = "ecs-products-ms"
+  hash_key = "id"
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+
+  tags = local.tags
+}
+
+
+# ECR
+module "order_ecr" {
+  source          = "terraform-aws-modules/ecr/aws"
+  version         = "1.6.0"
+  repository_name = "lms-order-ms"
+  repository_lifecycle_policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1,
+        description  = "Keep last 30 images",
+        selection = {
+          tagStatus     = "tagged",
+          tagPrefixList = ["v"],
+          countType     = "imageCountMoreThan",
+          countNumber   = 30
+        },
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+
+  tags = local.tags
+}
+
+module "user_ecr" {
+  source          = "terraform-aws-modules/ecr/aws"
+  version         = "1.6.0"
+  repository_name = "lms-user-ms"
+  repository_lifecycle_policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1,
+        description  = "Keep last 30 images",
+        selection = {
+          tagStatus     = "tagged",
+          tagPrefixList = ["v"],
+          countType     = "imageCountMoreThan",
+          countNumber   = 30
+        },
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+
+  tags = local.tags
+}
+
+
+module "product_ecr" {
+  source          = "terraform-aws-modules/ecr/aws"
+  version         = "1.6.0"
+  repository_name = "lms-product-ms"
+  repository_lifecycle_policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1,
+        description  = "Keep last 30 images",
+        selection = {
+          tagStatus     = "tagged",
+          tagPrefixList = ["v"],
+          countType     = "imageCountMoreThan",
+          countNumber   = 30
+        },
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+
+  tags = local.tags
 }
