@@ -52,10 +52,11 @@ resource "aws_codepipeline" "lms_ecs_pipeline_order" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["build_output"]
+      input_artifacts = ["source_output", "build_output"]
 
       configuration = {
-        ProjectName = aws_codebuild_project.lms_ecs_apply_order.name
+        ProjectName   = aws_codebuild_project.lms_ecs_apply_order.name
+        PrimarySource = "source_output"
       }
     }
   }

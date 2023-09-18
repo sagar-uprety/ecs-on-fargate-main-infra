@@ -52,8 +52,7 @@ resource "aws_codepipeline" "lms_ecs_pipeline_product" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["build_output"]
-
+      input_artifacts = ["source_output", "build_output"]
       configuration = {
         ProjectName = aws_codebuild_project.lms_ecs_apply_product.name
       }
