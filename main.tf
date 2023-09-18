@@ -2,6 +2,7 @@
 # Defines the resources to be created
 ################################################################################
 data "aws_availability_zones" "available" {}
+data "aws_caller_identity" "current" {}
 
 locals {
   name    = "lms-ecs-dev"
@@ -296,19 +297,20 @@ module "product_dynamodb_table" {
 
 # ECR
 module "order_ecr" {
-  source          = "terraform-aws-modules/ecr/aws"
-  version         = "1.6.0"
-  repository_name = "lms-order-ms"
+  source                  = "terraform-aws-modules/ecr/aws"
+  version                 = "1.6.0"
+  repository_name         = "lms-order-ms"
+  repository_force_delete = true
   repository_lifecycle_policy = jsonencode({
     rules = [
       {
         rulePriority = 1,
-        description  = "Keep last 30 images",
+        description  = "Keep last 10 images",
         selection = {
           tagStatus     = "tagged",
           tagPrefixList = ["v"],
           countType     = "imageCountMoreThan",
-          countNumber   = 30
+          countNumber   = 10
         },
         action = {
           type = "expire"
@@ -321,19 +323,20 @@ module "order_ecr" {
 }
 
 module "user_ecr" {
-  source          = "terraform-aws-modules/ecr/aws"
-  version         = "1.6.0"
-  repository_name = "lms-user-ms"
+  source                  = "terraform-aws-modules/ecr/aws"
+  version                 = "1.6.0"
+  repository_name         = "lms-user-ms"
+  repository_force_delete = true
   repository_lifecycle_policy = jsonencode({
     rules = [
       {
         rulePriority = 1,
-        description  = "Keep last 30 images",
+        description  = "Keep last 10 images",
         selection = {
           tagStatus     = "tagged",
           tagPrefixList = ["v"],
           countType     = "imageCountMoreThan",
-          countNumber   = 30
+          countNumber   = 10
         },
         action = {
           type = "expire"
@@ -347,19 +350,20 @@ module "user_ecr" {
 
 
 module "product_ecr" {
-  source          = "terraform-aws-modules/ecr/aws"
-  version         = "1.6.0"
-  repository_name = "lms-product-ms"
+  source                  = "terraform-aws-modules/ecr/aws"
+  version                 = "1.6.0"
+  repository_name         = "lms-product-ms"
+  repository_force_delete = true
   repository_lifecycle_policy = jsonencode({
     rules = [
       {
         rulePriority = 1,
-        description  = "Keep last 30 images",
+        description  = "Keep last 10 images",
         selection = {
           tagStatus     = "tagged",
           tagPrefixList = ["v"],
           countType     = "imageCountMoreThan",
-          countNumber   = 30
+          countNumber   = 10
         },
         action = {
           type = "expire"
