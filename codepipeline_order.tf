@@ -170,6 +170,7 @@ resource "aws_iam_role_policy" "codebuild-policy" {
           "servicediscovery:*",
           "application-autoscaling:*",
           "ecs:*",
+          "ssm:*",
         "elasticloadbalancing:*"]
         Effect   = "Allow"
         Resource = "*"
