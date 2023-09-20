@@ -1,6 +1,13 @@
+################################################################################
+# Codepipeline for Product Service
+################################################################################
+
+# Codepipeline
 resource "aws_codepipeline" "lms_ecs_pipeline_product" {
-  name     = "product_pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+  name       = "product_pipeline"
+  role_arn   = aws_iam_role.codepipeline_role.arn
+  depends_on = [module.ecs_cluster, module.alb, module.alb_sg, module.order_dynamodb_table, module.order_ecr, module.vpc, module.product_dynamodb_table, module.product_ecr, module.user_dynamodb_table, module.user_ecr]
+
 
   artifact_store {
     location = "lms-playground"
@@ -52,19 +59,15 @@ resource "aws_codepipeline" "lms_ecs_pipeline_product" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["source_output", "build_output"]
+      input_artifacts = ["build_output"]
       configuration = {
-        ProjectName   = aws_codebuild_project.lms_ecs_apply_product.name
-        PrimarySource = "source_output"
+        ProjectName = aws_codebuild_project.lms_ecs_apply_product.name
       }
     }
   }
 }
 
-# resource "aws_codestarconnections_connection" "ecs-lms-connection" {
-#   name          = "ecs-lms-connection"
-#   provider_type = "GitHub"
-# }
+# CodeBuild for build
 
 resource "aws_codebuild_project" "lms_ecs_build_product" {
   name         = "product-build" #Need to this change this according to service
@@ -96,6 +99,8 @@ resource "aws_codebuild_project" "lms_ecs_build_product" {
     }
   }
 }
+
+# CodeBuild for deploy
 
 resource "aws_codebuild_project" "lms_ecs_apply_product" {
   name         = "product-deploy" #Need to this change this according to service

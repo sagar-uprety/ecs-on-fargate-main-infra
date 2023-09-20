@@ -1,6 +1,13 @@
+################################################################################
+# Codepipeline for Order Service
+################################################################################
+
+#CodePipeline
+
 resource "aws_codepipeline" "lms_ecs_pipeline_order" {
-  name     = "order_pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+  name       = "order_pipeline"
+  role_arn   = aws_iam_role.codepipeline_role.arn
+  depends_on = [module.ecs_cluster, module.alb, module.alb_sg, module.order_dynamodb_table, module.order_ecr, module.vpc, module.product_dynamodb_table, module.product_ecr, module.user_dynamodb_table, module.user_ecr]
 
   artifact_store {
     location = "lms-playground"
@@ -52,23 +59,19 @@ resource "aws_codepipeline" "lms_ecs_pipeline_order" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["source_output", "build_output"]
+      input_artifacts = ["build_output"]
 
       configuration = {
-        ProjectName   = aws_codebuild_project.lms_ecs_apply_order.name
-        PrimarySource = "source_output"
+        ProjectName = aws_codebuild_project.lms_ecs_apply_order.name
       }
     }
   }
 }
 
-# resource "aws_codestarconnections_connection" "ecs-lms-connection" {
-#   name          = "ecs-lms-connection"
-#   provider_type = "GitHub"
-# }
+# CodeBuild for build
 
 resource "aws_codebuild_project" "lms_ecs_build_order" {
-  name         = "order-build" #Need to this change this according to service
+  name         = "order-build"
   description  = "Image Build stage and Terraform planning stage"
   service_role = aws_iam_role.codebuild-role.arn
 
@@ -77,7 +80,7 @@ resource "aws_codebuild_project" "lms_ecs_build_order" {
   }
 
   source {
-    type      = "CODEPIPELINE" #GITHUB_ENTERPRSES | BITBUCKET | S3 | CODECOMMIT | CODEPIPELINE | GITHUB | NO_SOURCE
+    type      = "CODEPIPELINE"
     buildspec = "buildspec-plan.yml"
   }
 
@@ -98,8 +101,10 @@ resource "aws_codebuild_project" "lms_ecs_build_order" {
   }
 }
 
+# CodeBuild for deploy
+
 resource "aws_codebuild_project" "lms_ecs_apply_order" {
-  name         = "order-deploy" #Need to this change this according to service
+  name         = "order-deploy"
   description  = "Terraform applying stage"
   service_role = aws_iam_role.codebuild-role.arn
 
@@ -108,7 +113,7 @@ resource "aws_codebuild_project" "lms_ecs_apply_order" {
   }
 
   source {
-    type      = "CODEPIPELINE" #GITHUB_ENTERPRSES | BITBUCKET | S3 | CODECOMMIT | CODEPIPELINE | GITHUB | NO_SOURCE
+    type      = "CODEPIPELINE"
     buildspec = "buildspec-apply.yml"
   }
 
@@ -154,97 +159,25 @@ resource "aws_iam_role_policy" "codebuild-policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # {
-      #   Action   = ["codecommit:GitPull"]   # need to change this according to service
-      #   Effect   = "Allow"
-      #   Resource = "*"
-      # },
       {
         Action = [
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:CompleteLayerUpload",
-          "ecr:GetAuthorizationToken",
-          "ecr:InitiateLayerUpload",
-          "ecr:PutImage",
-        "ecr:UploadLayerPart"]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-        "s3:*"]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        "Action" : [
-          "ec2:DescribeAvailabilityZones",
-          "logs:TagResource",
-          "iam:CreateRole",
-          "iam:CreatePolicy",
-          "ec2:CreateSecurityGroup",
-          "vpc:CreateSecurityGroup",
-          "logs:PutRetentionPolicy",
-          "iam:TagRole",
-          "iam:TagPolicy",
-          "logs:DescribeLogGroups",
-          "logs:ListTagsLogGroup",
-          "iam:*"
-        ],
-        "Effect" : "Allow",
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "ecs:CreateService",
-          "ecs:*",
-          "ecs:DescribeServices",
-          "ecs:RegisterTaskDefinition",
-          "ecs:DescribeTaskDefinition",
-          "ec2:DescribeSecurityGroups",
-          "ec2:DescribeSubnets",
+          "ecr:*",
+          "s3:*",
+          "logs:*",
           "ec2:*",
-          "elasticloadbalancing:DescribeTargetGroups",
-          "iam:CreateServiceLinkedRole",
-          "iam:PassRole",
-          "servicediscovery:CreateService",
-          "servicediscovery:DeleteService",
-          "servicediscovery:GetService",
-          "servicediscovery:GetInstance",
-          "servicediscovery:RegisterInstance",
-          "servicediscovery:DeregisterInstance",
-          "application-autoscaling:*" #arn:aws:application-autoscaling:us-east-2:426857564226:scalable-target/*
-        ],
-        "Resource" : "*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "s3:GetObject"
-        ],
-        "Resource" : "arn:aws:s3:::lms-playground/*"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:*"
-        ],
-        "Resource" : "arn:aws:logs:*:*:*"
+          "iam:*",
+          "vpc:*",
+          "servicediscovery:*",
+          "application-autoscaling:*",
+          "ecs:*",
+        "elasticloadbalancing:*"]
+        Effect   = "Allow"
+        Resource = "*"
       }
     ]
   })
 }
 
-# resource "aws_iam_policy_attachment" "codebuild-policy-attachment" {
-#   name       = "lms-codebuild-policy-attachment"
-#   roles      = ["${aws_iam_role.codebuild-role.name}"]
-#   policy_arn = aws_iam_role_policy.codebuild-policy.
-# }
 
 resource "aws_iam_role" "codepipeline_role" {
   name = "codepipeline-role"

@@ -1,6 +1,14 @@
+################################################################################
+# Codepipeline for User Service
+################################################################################
+
+#CodePipeline
+
 resource "aws_codepipeline" "lms_ecs_pipeline_user" {
-  name     = "user_pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+  name       = "user_pipeline"
+  role_arn   = aws_iam_role.codepipeline_role.arn
+  depends_on = [module.ecs_cluster, module.alb, module.alb_sg, module.order_dynamodb_table, module.order_ecr, module.vpc, module.product_dynamodb_table, module.product_ecr, module.user_dynamodb_table, module.user_ecr]
+
 
   artifact_store {
     location = "lms-playground"
@@ -52,23 +60,19 @@ resource "aws_codepipeline" "lms_ecs_pipeline_user" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["source_output", "build_output"]
+      input_artifacts = ["build_output"]
 
       configuration = {
-        ProjectName   = aws_codebuild_project.lms_ecs_apply_user.name
-        PrimarySource = "source_output"
+        ProjectName = aws_codebuild_project.lms_ecs_apply_user.name
       }
     }
   }
 }
 
-# resource "aws_codestarconnections_connection" "ecs-lms-connection" {
-#   name          = "ecs-lms-connection"
-#   provider_type = "GitHub"
-# }
+# CodeBuild for build
 
 resource "aws_codebuild_project" "lms_ecs_build_user" {
-  name         = "user-build" #Need to this change this according to service
+  name         = "user-build"
   description  = "Image Build stage and Terraform planning stage"
   service_role = aws_iam_role.codebuild-role.arn
 
@@ -77,7 +81,7 @@ resource "aws_codebuild_project" "lms_ecs_build_user" {
   }
 
   source {
-    type      = "CODEPIPELINE" #GITHUB_ENTERPRSES | BITBUCKET | S3 | CODECOMMIT | CODEPIPELINE | GITHUB | NO_SOURCE
+    type      = "CODEPIPELINE"
     buildspec = "buildspec-plan.yml"
   }
 
@@ -98,8 +102,10 @@ resource "aws_codebuild_project" "lms_ecs_build_user" {
   }
 }
 
+# CodeBuild for deploy
+
 resource "aws_codebuild_project" "lms_ecs_apply_user" {
-  name         = "user-deploy" #Need to this change this according to service
+  name         = "user-deploy"
   description  = "Terraform applying stage"
   service_role = aws_iam_role.codebuild-role.arn
 
@@ -108,7 +114,7 @@ resource "aws_codebuild_project" "lms_ecs_apply_user" {
   }
 
   source {
-    type      = "CODEPIPELINE" #GITHUB_ENTERPRSES | BITBUCKET | S3 | CODECOMMIT | CODEPIPELINE | GITHUB | NO_SOURCE
+    type      = "CODEPIPELINE"
     buildspec = "buildspec-apply.yml"
   }
 

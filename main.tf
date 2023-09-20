@@ -1,44 +1,17 @@
 ################################################################################
 # Defines the resources to be created
 ################################################################################
-data "aws_availability_zones" "available" {}
-data "aws_caller_identity" "current" {}
 
-locals {
-  name    = "lms-ecs-dev"
-  project = "ecs-module-lms"
-
-  vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  containers = [
-    {
-      name = "user",
-      port = 3000,
-    },
-    {
-      name = "product",
-      port = 3001,
-    },
-    {
-      name = "order",
-      port = 3002
-    },
-  ]
-
-  tags = {
-    Name    = local.name,
-    Project = local.project
-  }
-}
-
-###################################################################### CLUSTER
+# CLUSTER
 
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
   version = "5.2.2"
 
   cluster_name = local.name
+
+  create = true # Determines whether resources will be created (affects all resources)
+
 
   cluster_settings = {
     "name" : "containerInsights",
@@ -47,10 +20,9 @@ module "ecs_cluster" {
 
   cloudwatch_log_group_retention_in_days = 90
   create_cloudwatch_log_group            = true
-
-  create_task_exec_policy               = true # Create IAM policy for task execution (Uses Managed AmazonECSTaskExecutionRolePolicy)
-  default_capacity_provider_use_fargate = true # Use Fargate as default capacity provider
-
+  create_task_exec_iam_role              = false # Determines whether the ECS task definition IAM role should be created
+  create_task_exec_policy                = true  # Create IAM policy for task execution (Uses Managed AmazonECSTaskExecutionRolePolicy)
+  default_capacity_provider_use_fargate  = true  # Use Fargate as default capacity provider
   cluster_configuration = {
     execute_command_configuration = {
       logging = "OVERRIDE"
@@ -72,10 +44,11 @@ module "ecs_cluster" {
       }
     }
   }
-  tags = local.tags
 }
 
+################################################################################
 # Supporting Resources
+################################################################################
 
 resource "aws_service_discovery_http_namespace" "ecs_service_discovery" {
   name        = local.name
@@ -97,7 +70,6 @@ module "alb_sg" {
   egress_rules       = ["all-all"]
   egress_cidr_blocks = module.vpc.private_subnets_cidr_blocks
 
-  tags = local.tags
 }
 
 #ALB
@@ -219,7 +191,6 @@ module "alb" {
     }
   ]
 
-  tags = local.tags
 }
 
 
@@ -259,7 +230,6 @@ module "order_dynamodb_table" {
     }
   ]
 
-  tags = local.tags
 }
 
 module "user_dynamodb_table" {
@@ -275,7 +245,6 @@ module "user_dynamodb_table" {
     }
   ]
 
-  tags = local.tags
 }
 
 module "product_dynamodb_table" {
@@ -291,7 +260,6 @@ module "product_dynamodb_table" {
     }
   ]
 
-  tags = local.tags
 }
 
 
@@ -319,7 +287,6 @@ module "order_ecr" {
     ]
   })
 
-  tags = local.tags
 }
 
 module "user_ecr" {
@@ -345,7 +312,6 @@ module "user_ecr" {
     ]
   })
 
-  tags = local.tags
 }
 
 
@@ -372,5 +338,4 @@ module "product_ecr" {
     ]
   })
 
-  tags = local.tags
 }

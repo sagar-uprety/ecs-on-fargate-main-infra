@@ -632,10 +632,10 @@ This workflow incorporates Terraform, Checkov, tfsec, and Infracost to validate,
 
 | Name | Description |
 |------|-------------|
-| <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | n/a |
-| <a name="output_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#output\_ecs\_cluster\_arn) | n/a |
-| <a name="output_ecs_service_discovery_arn"></a> [ecs\_service\_discovery\_arn](#output\_ecs\_service\_discovery\_arn) | n/a |
-| <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | n/a |
-| <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | n/a |
-| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | n/a |
+| <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | DNS name of the ALB |
+| <a name="output_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#output\_ecs\_cluster\_arn) | ARN of the ECS cluster |
+| <a name="output_ecs_service_discovery_arn"></a> [ecs\_service\_discovery\_arn](#output\_ecs\_service\_discovery\_arn) | ARN of the ECS service discovery namespace |
+| <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | Value of the private subnets |
+| <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Value of the security group id |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group of the ALB |
 <!-- END_TF_DOCS -->
