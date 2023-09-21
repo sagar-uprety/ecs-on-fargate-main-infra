@@ -26,7 +26,7 @@ resource "aws_codepipeline" "lms_ecs_pipeline_order" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = "arn:aws:codestar-connections:us-east-1:426857564226:connection/a96d0fa6-04d0-4bac-ab64-988b299a805b" #aws_codestarconnections_connection.ecs-lms-connection.arn
+        ConnectionArn    = data.aws_ssm_parameter.codestar_connection_ssm.value
         FullRepositoryId = "${var.github_repo_owner}/${var.github_order_repo_name}"
         BranchName       = var.github_order_branch
       }
@@ -246,8 +246,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codestar-connections:UpdateConnectionInstallation"
         ],
         "Resource" : [
-          "arn:aws:codestar-connections:*:426857564226:host/*",
-          "arn:aws:codestar-connections:*:426857564226:connection/*"
+          "arn:aws:codestar-connections:*:*:host/*",
+          "arn:aws:codestar-connections:*:*:connection/*"
         ]
       },
       {
@@ -274,8 +274,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "ecs:*"
         ],
         "Resource" : [
-          "arn:aws:ecs:*:426857564226:cluster/lms-ecs",
-          "arn:aws:ecs:*:426857564226:cluster/lms-ecs/*"
+          "arn:aws:ecs:*:*:cluster/lms-ecs",
+          "arn:aws:ecs:*:*:cluster/lms-ecs/*"
         ]
       },
       {

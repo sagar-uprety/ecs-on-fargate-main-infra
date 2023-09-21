@@ -60,6 +60,9 @@ resource "aws_service_discovery_http_namespace" "ecs_service_discovery" {
   tags        = local.tags
 }
 
+data "aws_ssm_parameter" "codestar_connection_ssm" {
+  name = "codestar_connecion_arn"
+}
 
 module "alb_sg" {
   source      = "terraform-aws-modules/security-group/aws"

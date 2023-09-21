@@ -27,7 +27,7 @@ resource "aws_codepipeline" "lms_ecs_pipeline_user" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn    = "arn:aws:codestar-connections:us-east-1:426857564226:connection/a96d0fa6-04d0-4bac-ab64-988b299a805b" #aws_codestarconnections_connection.ecs-lms-connection.arn
+        ConnectionArn    = data.aws_ssm_parameter.codestar_connection_ssm.value
         FullRepositoryId = "${var.github_repo_owner}/${var.github_user_repo_name}"
         BranchName       = var.github_user_branch
       }
