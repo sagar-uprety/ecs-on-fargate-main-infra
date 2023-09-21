@@ -32,6 +32,10 @@ module "ecs_cluster" {
     }
   }
 
+  cluster_service_connect_defaults = {
+    namespace = aws_service_discovery_http_namespace.ecs_service_discovery.arn
+  }
+
   fargate_capacity_providers = {
     FARGATE = {
       default_capacity_provider_strategy = {
@@ -103,7 +107,7 @@ module "alb" {
 
       conditions = [
         {
-          path_patterns = ["/users"]
+          path_patterns = ["/users*"]
         }
       ]
     },
@@ -118,7 +122,7 @@ module "alb" {
 
       conditions = [
         {
-          path_patterns = ["/products"]
+          path_patterns = ["/products*"]
         }
       ]
     },
@@ -134,7 +138,7 @@ module "alb" {
 
       conditions = [
         {
-          path_patterns = ["/orders"]
+          path_patterns = ["/orders*"]
         }
       ]
     }
