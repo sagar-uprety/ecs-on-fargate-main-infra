@@ -16,6 +16,6 @@ terraform {
     bucket  = "lms-playground"
     region  = "us-east-2"
     encrypt = true
-    key     = "terraform.tfstate"
+    key     = "lms-ecs-base-infra/terraform.tfstate"
   }
 }
