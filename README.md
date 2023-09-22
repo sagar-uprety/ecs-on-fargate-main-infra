@@ -567,20 +567,51 @@ This workflow incorporates Terraform, Checkov, tfsec, and Infracost to validate,
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.55 |
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.16.2 |
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_alb"></a> [alb](#module\_alb) | terraform-aws-modules/alb/aws | ~> 8.0 |
+| <a name="module_alb_sg"></a> [alb\_sg](#module\_alb\_sg) | terraform-aws-modules/security-group/aws | ~> 5.0 |
+| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws//modules/cluster | 5.2.2 |
+| <a name="module_order_dynamodb_table"></a> [order\_dynamodb\_table](#module\_order\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_order_ecr"></a> [order\_ecr](#module\_order\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
+| <a name="module_product_dynamodb_table"></a> [product\_dynamodb\_table](#module\_product\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_product_ecr"></a> [product\_ecr](#module\_product\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
+| <a name="module_user_dynamodb_table"></a> [user\_dynamodb\_table](#module\_user\_dynamodb\_table) | terraform-aws-modules/dynamodb-table/aws | 3.3.0 |
+| <a name="module_user_ecr"></a> [user\_ecr](#module\_user\_ecr) | terraform-aws-modules/ecr/aws | 1.6.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 5.1.2 |
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_codebuild_project.lms_ecs_apply_order](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codebuild_project.lms_ecs_apply_product](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codebuild_project.lms_ecs_apply_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codebuild_project.lms_ecs_build_order](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codebuild_project.lms_ecs_build_product](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codebuild_project.lms_ecs_build_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project) | resource |
+| [aws_codepipeline.lms_ecs_pipeline_order](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codepipeline) | resource |
+| [aws_codepipeline.lms_ecs_pipeline_product](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codepipeline) | resource |
+| [aws_codepipeline.lms_ecs_pipeline_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codepipeline) | resource |
+| [aws_iam_role.codebuild-role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.codepipeline_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.codebuild-policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy.codepipeline_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_service_discovery_http_namespace.ecs_service_discovery](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/service_discovery_http_namespace) | resource |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_ssm_parameter.codestar_connection_ssm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 
 ## Inputs
 
@@ -588,10 +619,24 @@ No resources.
 |------|-------------|------|---------|:--------:|
 | <a name="input_application"></a> [application](#input\_application) | Name of the application | `string` | `""` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Working application environment eg: dev, stg, prd | `string` | `""` | no |
+| <a name="input_github_order_branch"></a> [github\_order\_branch](#input\_github\_order\_branch) | Name of the branch of the order repository | `string` | `"main"` | no |
+| <a name="input_github_order_repo_name"></a> [github\_order\_repo\_name](#input\_github\_order\_repo\_name) | Name of the order repository | `string` | n/a | yes |
+| <a name="input_github_product_branch"></a> [github\_product\_branch](#input\_github\_product\_branch) | Name of the branch of the order repository | `string` | `"main"` | no |
+| <a name="input_github_product_repo_name"></a> [github\_product\_repo\_name](#input\_github\_product\_repo\_name) | Name of the order repository | `string` | n/a | yes |
+| <a name="input_github_repo_owner"></a> [github\_repo\_owner](#input\_github\_repo\_owner) | Name of the github repo owner | `string` | n/a | yes |
+| <a name="input_github_user_branch"></a> [github\_user\_branch](#input\_github\_user\_branch) | Name of the branch of the order repository | `string` | `"main"` | no |
+| <a name="input_github_user_repo_name"></a> [github\_user\_repo\_name](#input\_github\_user\_repo\_name) | Name of the order repository | `string` | n/a | yes |
 | <a name="input_owner"></a> [owner](#input\_owner) | Name to be used on all the resources as identifier | `string` | `""` | no |
-| <a name="input_region"></a> [region](#input\_region) | Region be used for all the resources | `string` | `"us-east-1"` | no |
+| <a name="input_region"></a> [region](#input\_region) | Region be used for all the resources | `string` | `"us-east-2"` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | DNS name of the ALB |
+| <a name="output_ecs_cluster_arn"></a> [ecs\_cluster\_arn](#output\_ecs\_cluster\_arn) | ARN of the ECS cluster |
+| <a name="output_ecs_service_discovery_arn"></a> [ecs\_service\_discovery\_arn](#output\_ecs\_service\_discovery\_arn) | ARN of the ECS service discovery namespace |
+| <a name="output_private_subnets"></a> [private\_subnets](#output\_private\_subnets) | Value of the private subnets |
+| <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Value of the security group id |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | ARN of the target group of the ALB |
 <!-- END_TF_DOCS -->
