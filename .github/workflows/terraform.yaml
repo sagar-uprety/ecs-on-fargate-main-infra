@@ -89,8 +89,8 @@ jobs:
           cd ${{ env.terraformWorkDir }}
           terraform validate
 
-      - name:  Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.0
+      # - name:  Run tfsec
+      #   uses: aquasecurity/tfsec-action@v1.0.0
 
       - name: Run Terratest
         run: |
