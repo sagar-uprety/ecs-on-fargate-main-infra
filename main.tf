@@ -3,7 +3,6 @@
 ################################################################################
 
 # CLUSTER
-
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
   version = "5.2.2"
@@ -80,7 +79,6 @@ module "alb_sg" {
 }
 
 #ALB
-
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
@@ -200,9 +198,7 @@ module "alb" {
 
 }
 
-
 # VPC
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"
@@ -221,9 +217,7 @@ module "vpc" {
   }
 }
 
-
 # DynamoDB
-
 module "order_dynamodb_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
   version  = "3.3.0"
@@ -269,7 +263,6 @@ module "product_dynamodb_table" {
 
 }
 
-
 # ECR
 module "order_ecr" {
   source                  = "terraform-aws-modules/ecr/aws"
@@ -296,6 +289,7 @@ module "order_ecr" {
 
 }
 
+# ECR Repositories
 module "user_ecr" {
   source                  = "terraform-aws-modules/ecr/aws"
   version                 = "1.6.0"
@@ -321,7 +315,6 @@ module "user_ecr" {
 
 }
 
-
 module "product_ecr" {
   source                  = "terraform-aws-modules/ecr/aws"
   version                 = "1.6.0"
@@ -344,5 +337,4 @@ module "product_ecr" {
       }
     ]
   })
-
 }
