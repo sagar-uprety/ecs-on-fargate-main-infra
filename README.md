@@ -75,7 +75,7 @@ The infrastructure implements a microservices architecture with the following ke
 
 ## Project Structure
 
-* **`main.tf`**: Defines the core infrastructure for  ecs_service, and supporting resources
+* **`main.tf`**: Defines the core infrastructure for ecs_cluster, ecs_service, and supporting resources
 * **`codepipeline*.tf`**: Defines the terraform config for setting up individual CI/CD pipelines for the microservices
 * **`variables.tf`**: Input variables for parameterization and sensitive data
 * **`provider.tf`**: Specifies the AWS provider
