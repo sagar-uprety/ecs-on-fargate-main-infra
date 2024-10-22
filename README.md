@@ -1,4 +1,4 @@
-# AWS ECS on Fargate Terraform (Base Resources for Mircroservices Deployment )
+# AWS ECS on Fargate Terraform : Base Resources for Mircroservices Deployment with CI/CD
 
 [![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
@@ -7,7 +7,7 @@
 
 This repository contains Infrastructure as Code (IaC) for deploying a Node.JS microservices architecture using AWS Elastic Container Service (ECS) with Fargate launch type. The infrastructure is designed following AWS best practices for high availability, scalability, and security.
 
-The application is a simple e-commerce application with user details, product catalogue and order service. The 
+The application is a simple e-commerce application with user details, product catalogue and order service. 
 
 ## Architecture 
 
@@ -60,21 +60,6 @@ The infrastructure implements a microservices architecture with the following ke
 - Private Subnet 2: 10.0.32.0/19
 
 
-## Repository Structure
-
-
-```
-.
-├── README.md
-├── main.tf                 # Main Terraform configuration
-├── variables.tf           # Input variables declaration
-├── outputs.tf            # Output values configuration
-├── providers.tf          # Provider configuration
-├── versions.tf           # Terraform version constraints and backend configuration 
-├── dev.tfvars          # Development environment variables
-└── .gitignore         # Git ignore rules
-```
-
 ## Prerequisites
 
 - AWS Account with appropriate permissions
@@ -88,9 +73,22 @@ The infrastructure implements a microservices architecture with the following ke
 - **main**: Complete infrastructure with CI/CD pipeline integration
 - **ms**: Base infrastructure without pipeline integration
 
+## Project Structure
+
+* **`main.tf`**: Defines the core infrastructure for  ecs_service, and supporting resources
+* **`codepipeline*.tf`**: Defines the terraform config for setting up individual CI/CD pipelines for the microservices
+* **`variables.tf`**: Input variables for parameterization and sensitive data
+* **`provider.tf`**: Specifies the AWS provider
+* **`output.tf`**: Defines outputs such as Auto Scaling Group ID and RDS endpoint
+* **`dev.tfvars`**: Variables specific to the dev environment
+* **`versions.tf`**: Terraform version constraints and backend configuration 
+* **`locals.tf`**: local value to be used in main.tf
+* **`.pre-commit-config.yaml`**: git pre-commit configuration 
+* **`.gitignore`**: Lists files to exclude from version control
+
 ## Related Microservices Repositories
 
-The terraform configuration to deploy the individual ECS services with CI/CD built-in are in separate repositories. Find them below:
+The terraform configuration and application source code to deploy the individual ECS services with CI/CD built-in are in separate repositories. Find them below:
 
 1. [User Service](https://github.com/sagar-uprety/ecs-on-fargate-user-service)
 2. [Product Service](https://github.com/sagar-uprety/ecs-on-fargate-product-service)
@@ -150,20 +148,6 @@ The terraform configuration to deploy the individual ECS services with CI/CD bui
    ```bash
    terraform destroy --var-file="dev.tfvars"
    ```
-
-## Project Structure
-
-* **`main.tf`**: Defines the core infrastructure for  ecs_service, and supporting resources
-* **`codepipeline*.tf`**: Defines the terraform config for setting up individual CI/CD pipelines for the microservices
-* **`variables.tf`**: Input variables for parameterization and sensitive data
-* **`provider.tf`**: Specifies the AWS provider
-* **`output.tf`**: Defines outputs such as Auto Scaling Group ID and RDS endpoint
-* **`dev.tfvars`**: Variables specific to the dev environment
-* **`versions.tf`**: Terraform version constraints and backend configuration 
-* **`locals.tf`**: local value to be used in main.tf
-* **`.pre-commit-config.yaml`**: git pre-commit configuration 
-* **`.gitignore`**: Lists files to exclude from version control
-
 
 ## Contributing
 
