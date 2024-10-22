@@ -5,7 +5,7 @@
 
 ## Overview
 
-This repository contains Infrastructure as Code (IaC) for deploying a Node.JS microservices architecture using AWS Elastic Container Service (ECS) with Fargate launch type. The infrastructure is designed following AWS best practices for high availability, scalability, and security.
+This repository contains Infrastructure as Code (IaC) for deploying Node.JS microservices (3) using AWS Elastic Container Service (ECS) with Fargate launch type. The infrastructure is designed following AWS best practices for high availability, scalability, and security.
 
 The application is a simple e-commerce application with user details, product catalogue and order service. 
 
